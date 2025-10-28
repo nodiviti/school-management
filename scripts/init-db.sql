@@ -55,3 +55,36 @@ CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_role ON users(role);
 CREATE INDEX idx_students_user_id ON students(user_id);
 CREATE INDEX idx_students_status ON students(status);
+
+
+-- Enable pgcrypto for password hashing
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+-- Insert demo superadmin user
+INSERT INTO users (
+    email,
+    username,
+    password_hash,
+    role,
+    first_name,
+    last_name,
+    phone,
+    is_active,
+    is_verified,
+    created_at,
+    updated_at
+)
+VALUES (
+    'admin@school.com',
+    'admin',
+    crypt('SecurePass123!', gen_salt('bf')),  -- bcrypt hash
+    'superadmin',
+    'System',
+    'Administrator',
+    '0000000000',
+    TRUE,
+    TRUE,
+    NOW(),
+    NOW()
+)
+ON CONFLICT (email) DO NOTHING;

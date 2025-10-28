@@ -28,7 +28,7 @@ services:
   redis:
     image: redis:7-alpine
     container_name: school_redis
-    command: redis-server --requirepass ${REDIS_PASSWORD:-}
+    command: redis-server --requirepass ${REDIS_PASSWORD:-pass123}
     ports:
       - "${REDIS_PORT:-6379}:6379"
     volumes:
@@ -76,24 +76,24 @@ services:
     restart: unless-stopped
 
   # pgAdmin (PostgreSQL Management - Optional)
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    container_name: school_pgadmin
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@school.com}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin123}
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
-    ports:
-      - "5050:80"
-    volumes:
-      - pgadmin_data:/var/lib/pgadmin
-    depends_on:
-      - postgres
-    networks:
-      - school_network
-    restart: unless-stopped
-    profiles:
-      - tools
+  # pgadmin:
+  #   image: dpage/pgadmin4:latest
+  #   container_name: school_pgadmin
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@school.com}
+  #     PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin123}
+  #     PGADMIN_CONFIG_SERVER_MODE: 'False'
+  #   ports:
+  #     - "5050:80"
+  #   volumes:
+  #     - pgadmin_data:/var/lib/pgadmin
+  #   depends_on:
+  #     - postgres
+  #   networks:
+  #     - school_network
+  #   restart: unless-stopped
+  #   profiles:
+  #     - tools
 
   # Backend API (FastAPI)
   backend:
@@ -108,6 +108,8 @@ services:
       - MINIO_ENDPOINT=minio:9000
       - SMTP_HOST=mailhog
       - SMTP_PORT=1025
+      - CORS_ALLOWED_ORIGINS=*
+      - CORS_ALLOW_CREDENTIALS=true"
     ports:
       - "${BACKEND_PORT:-8001}:8001"
     volumes:
@@ -123,8 +125,8 @@ services:
     networks:
       - school_network
     restart: unless-stopped
-    profiles:
-      - app
+    # profiles:
+    #   - app
 
   # Frontend (React)
   frontend:
@@ -133,7 +135,8 @@ services:
       dockerfile: Dockerfile
     container_name: school_frontend
     environment:
-      - REACT_APP_BACKEND_URL=http://localhost:8001
+      - REACT_APP_BACKEND_URL=http://backend:8001
+      - CORS_ALLOWED_ORIGINS=*
     ports:
       - "${FRONTEND_PORT:-3000}:3000"
     volumes:
@@ -144,8 +147,8 @@ services:
     networks:
       - school_network
     restart: unless-stopped
-    profiles:
-      - app
+    # profiles:
+    #   - app
 
 volumes:
   postgres_data:
