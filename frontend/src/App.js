@@ -8,7 +8,12 @@ const AuthContext = createContext(null);
 
 export const useAuth = () => useContext(AuthContext);
 
-const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
+// const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
+
+const API_URL = process.env.REACT_APP_BACKEND_URL
+  ? `${process.env.REACT_APP_BACKEND_URL}/api`
+  : '/api';
+
 
 // API Helper
 const api = axios.create({

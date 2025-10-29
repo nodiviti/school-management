@@ -30,7 +30,7 @@ class Settings(BaseSettings):
     DB_MAX_OVERFLOW: int = 20
     
     # Redis
-    REDIS_URL: str = "redis://localhost:6379/0"
+    REDIS_URL: str = "redis://redis:6379/0"
     REDIS_CACHE_TTL: int = 3600
     
     # JWT
@@ -49,7 +49,7 @@ class Settings(BaseSettings):
     
     # Object Storage
     STORAGE_PROVIDER: str = "minio"  # minio | s3 | gcs | azure
-    MINIO_ENDPOINT: str = "localhost:9000"
+    MINIO_ENDPOINT: str = "minio:9000"
     MINIO_ACCESS_KEY: str = "minioadmin"
     MINIO_SECRET_KEY: str = "minioadmin"
     MINIO_BUCKET_NAME: str = "school-files"
